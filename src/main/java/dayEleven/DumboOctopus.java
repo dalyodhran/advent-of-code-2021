@@ -95,4 +95,22 @@ public class DumboOctopus {
         }
         return tmpOctopuses;
     }
+
+    public int getSynchroniseFlash(String data) {
+        String [] octopusLines = data.split("\\r?\\n");
+        int[][] octopuses = getOctopus(octopusLines);
+        int count = 0;
+        int maxFlash = octopuses.length * octopuses[0].length;
+        boolean fullFlash = false;
+
+        while(!fullFlash) {
+            incrementFlash(octopuses);
+            int flashes = getFlashes(octopuses);
+            if (flashes == maxFlash) {
+                fullFlash = true;
+            }
+            count++;
+        }
+        return count;
+    }
 }
