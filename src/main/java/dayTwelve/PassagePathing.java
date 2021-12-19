@@ -6,12 +6,12 @@ public class PassagePathing {
     public int getPaths(String data) {
         String [] paths = data.split("\\r?\\n");
         Map<String, List<String>> pathMap = getPathMap(paths);
-        int numberOfPaths = findAllPaths("start", "end", pathMap);
-        return numberOfPaths;
+        return findAllPaths("start", "end", pathMap);
     }
 
     private int findAllPaths(String src, String dest, Map<String, List<String>> pathMap) {
         int count = 0;
+        pathMap.remove(dest);
         Queue<List<String>> queue = new LinkedList<>();
 
 
@@ -29,11 +29,13 @@ public class PassagePathing {
             }
 
             List<String> lastEdge = pathMap.get(last);
-            for (String edge: lastEdge) {
-                if (canVisitEdge(edge, path)) {
-                    List<String> newPath = new ArrayList<>(path);
-                    newPath.add(edge);
-                    queue.offer(newPath);
+            if (lastEdge != null) {
+                for (String edge: lastEdge) {
+                    if (canVisitEdge(edge, path)) {
+                        List<String> newPath = new ArrayList<>(path);
+                        newPath.add(edge);
+                        queue.offer(newPath);
+                    }
                 }
             }
         }
@@ -42,15 +44,30 @@ public class PassagePathing {
     }
 
     private boolean canVisitEdge(String edge, List<String> visitedEdges) {
-        boolean hasNotVisited = true;
+        if (edge.equals("start")) {
+            return false;
+        }
+
+        if (Character.isUpperCase(edge.charAt(0))) {
+            return true;
+        }
+
+        boolean hasDoubleEdge = false;
+        Map<String, Integer> tmpPathCount = new HashMap<>();
         for (String previousEdges : visitedEdges) {
-            if (previousEdges.equals(edge)) {
-                hasNotVisited = false;
-                break;
+            if (Character.isLowerCase(previousEdges.charAt(0))) {
+                if (tmpPathCount.containsKey(previousEdges)) {
+                    tmpPathCount.put(previousEdges, tmpPathCount.get(previousEdges) + 1);
+                    if (!previousEdges.equals(edge)) {
+                        hasDoubleEdge = true;
+                    }
+                } else {
+                    tmpPathCount.put(previousEdges, 1);
+                }
             }
         }
-        return Character.isUpperCase(edge.charAt(0)) ||
-                Character.isLowerCase(edge.charAt(0)) && hasNotVisited;
+        return !tmpPathCount.containsKey(edge) ||
+                !hasDoubleEdge && tmpPathCount.get(edge) < 2;
     }
 
     private Map<String, List<String>> getPathMap(String[] pathsList) {

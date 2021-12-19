@@ -9,18 +9,15 @@ class PassagePathingTest {
     @Test
     public void sampleData() {
         PassagePathing path = new PassagePathing();
-        String data = "dc-end\n" +
-                "HN-start\n" +
-                "start-kj\n" +
-                "dc-start\n" +
-                "dc-HN\n" +
-                "LN-dc\n" +
-                "HN-end\n" +
-                "kj-sa\n" +
-                "kj-HN\n" +
-                "kj-dc";
+        String data = "start-A\n" +
+                "start-b\n" +
+                "A-c\n" +
+                "A-b\n" +
+                "b-d\n" +
+                "A-end\n" +
+                "b-end";
         int paths = path.getPaths(data);
-        assertEquals(19, paths);
+        assertEquals(36, paths);
     }
 
     @Test
