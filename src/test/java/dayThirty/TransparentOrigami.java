@@ -1,16 +1,19 @@
 package dayThirty;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TransparentOrigami {
 
-    public int getDots(String data) {
+    public int getDots(String data) throws IOException {
         String[] inputData = data.split("\\r?\\n");
 
         int[][] dotMap = getDotMap(inputData);
         List<String> folds = getFolds(inputData);
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < folds.size(); i++) {
             String[] fold = folds.get(i).split("=");
             if (fold[0].equals("x")) {
                 dotMap = getFoldXAxisNumber(Integer.parseInt(fold[1]), dotMap);
@@ -18,7 +21,25 @@ public class TransparentOrigami {
                 dotMap = getFoldYAxisNumber(Integer.parseInt(fold[1]), dotMap);
             }
         }
+        printSheet(dotMap);
         return getDotCount(dotMap);
+    }
+
+    private void printSheet(int[][] dotMap) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < dotMap.length; i++)//for each row
+        {
+            for(int j = 0; j < dotMap[0].length; j++)//for each column
+            {
+                builder.append(dotMap[i][j]+"");//append to the output string
+                if(j < dotMap[0].length - 1)//if this is not the last row element
+                    builder.append(",");//then add comma (if you don't like commas you can use spaces)
+            }
+            builder.append("\n");//append new line at the end of the row
+        }
+        BufferedWriter writer = new BufferedWriter(new FileWriter("./board.txt"));
+        writer.write(builder.toString());//save the string representation of the board
+        writer.close();
     }
 
     private int getDotCount(int[][] dotMap) {
