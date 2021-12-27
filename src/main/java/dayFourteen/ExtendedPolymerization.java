@@ -37,7 +37,7 @@ public class ExtendedPolymerization {
             }
         }
 
-        return quantity - quality;
+        return (quantity / 2 )  - (quality / 2);
     }
 
     private String cyclePolymerCodes(String polymer, Map<String, String> polymerCodes) {
